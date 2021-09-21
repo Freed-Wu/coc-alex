@@ -10,11 +10,11 @@
             "url": "https://github.com/shinnn/"
         }
     ],
+    "icon": "media/icon.png",
     "repository": "https://github.com/tlahmann/vscode-alex",
     "homepage": "https://github.com/tlahmann/vscode-alex#readme",
     "bugs": "https://github.com/tlahmann/vscode-alex/issues",
     "license": "MIT",
-    "icon": "media/icon.png",
     "galleryBanner": {
         "color": "#FAFAFA",
         "theme": "light"
@@ -87,22 +87,19 @@
         "webpack": "npm run clean && webpack --mode production --config ./client/webpack.config.js && webpack --mode production --config ./server/webpack.config.js",
         "webpack:dev": "npm run clean && webpack --mode none --config ./client/webpack.config.js && webpack --mode none --config ./server/webpack.config.js",
         "watch": "tsc -b -w",
+        "lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
         "postinstall": "cd server && npm install && cd ../client && npm install && cd ..",
         "clean": "rimraf client/out && rimraf server/out",
         "test": "sh ./scripts/e2e.sh"
     },
     "devDependencies": {
-        "@types/mocha": "^8.2",
-        "@types/node": "^14.14",
-        "@types/vscode": "^1.52",
-        "eslint": "^7.18",
-        "is-md": "^2.0.0",
-        "merge-options": "^3.0",
-        "rimraf": "^3.0.2",
-        "ts-loader": "^8.0",
-        "typescript": "^4.1",
-        "webpack": "^5.15",
-        "webpack-cli": "^4.4"
+        "@types/mocha": "^9.0.0",
+        "@types/node": "^16.9.1",
+        "@typescript-eslint/eslint-plugin": "^4.31.2",
+        "@typescript-eslint/parser": "^4.31.2",
+        "eslint": "^7.32.0",
+        "mocha": "^9.1.1",
+        "typescript": "^4.4.3"
     },
     "dependencies": {
         "vscode-languageclient": "^7.0"
