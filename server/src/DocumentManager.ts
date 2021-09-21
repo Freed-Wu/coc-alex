@@ -2,10 +2,10 @@ import { TextDocuments, Diagnostic } from 'vscode-languageserver';
 import { TextDocument, DocumentUri, TextEdit } from 'vscode-languageserver-textdocument';
 import { executeLinter } from './linter';
 import { applyQuickFixes } from './codeActions';
-import { AlexSettings } from './alexVSCode';
+import { AlexOptions } from 'alex';
 
 // Usable settings
-export interface VsCodeAlexLinterSettings extends AlexSettings{
+export interface VsCodeAlexLinterSettings extends AlexOptions {
     strategy: string;
 }
 
@@ -23,9 +23,9 @@ export class DocumentManager {
     private currentTextDocumentUri: DocumentUri = '';
 
     // Memory stored values
-    private docLinters: Map<String, any> = new Map<String, any>();
-    private docsDiagnostics: Map<String, Diagnostic[]> = new Map<String, Diagnostic[]>();
-    private docsDiagsQuickFixes: Map<String, any[]> = new Map<String, any[]>();
+    private docLinters: Map<string, any> = new Map<string, any>();
+    private docsDiagnostics: Map<string, Diagnostic[]> = new Map<string, Diagnostic[]>();
+    private docsDiagsQuickFixes: Map<string, any[]> = new Map<string, any[]>();
     // Lint/fix queue
     private currentlyLinted: any[] = [];
     private queuedLints: any[] = [];

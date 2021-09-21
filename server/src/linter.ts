@@ -3,9 +3,10 @@ import { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import * as path from 'path';
 
 import { DocumentManager } from './DocumentManager';
-import { AlexVSCode, AlexSettings } from './alexVSCode';
+import { AlexVSCode } from './alexVSCode';
 import { Range } from 'vscode';
-const { performance } = require('perf_hooks');
+import { AlexOptions } from 'alex';
+// const { performance } = require('perf_hooks');
 
 // Status notifications
 interface StatusParams {
@@ -19,9 +20,7 @@ interface StatusParams {
     lastFileName?: string
     lastLintTimeMs?: number
 }
-namespace StatusNotification {
-    export const type = new NotificationType<StatusParams, void>('alexLinter/status');
-}
+export const StatusNotificationType = new NotificationType<StatusParams>('alexLinter/status');
 
 // Create commands
 const COMMAND_LINT = Command.create('Lint', 'alex-linter.lint');
@@ -33,14 +32,14 @@ export const commands = [
 
 // Validate a file
 export async function executeLinter(textDocument: TextDocument, docManager: DocumentManager, opts: any = { fix: false, format: false }): Promise<TextEdit[]> {
-    const perfStart = performance.now();
+    // const perfStart = performance.now();
 
     // In case lint was queues, get most recent version of textDocument
     textDocument = docManager.getUpToDateTextDocument(textDocument);
 
     // Propose to replace tabs by spaces if there are, because CodeNarc hates tabs :/
-    let source: string = textDocument.getText();
-    let fileNm = path.basename(textDocument.uri);
+    const source: string = textDocument.getText();
+    const fileNm = path.basename(textDocument.uri);
 
     // Remove already existing diagnostics except if format
     if (!opts.format) {
@@ -52,7 +51,7 @@ export async function executeLinter(textDocument: TextDocument, docManager: Docu
 
     // Notify client that lint is starting
     // console.log(`Start linting ${ textDocument.uri }`);
-    docManager.connection.sendNotification(StatusNotification.type, {
+    docManager.connection.sendNotification(StatusNotificationType, {
         id: linterTaskId,
         state: 'lint.start' + (opts.fix ? '.fix' : opts.format ? '.format' : ''),
         documents: [{ documentUri: textDocument.uri }],
@@ -60,8 +59,8 @@ export async function executeLinter(textDocument: TextDocument, docManager: Docu
     });
 
     // Get settings and stop if action not enabled
-    let settings = await docManager.getDocumentSettings(textDocument.uri);
-    const linter = new AlexVSCode(settings as AlexSettings);
+    const settings = await docManager.getDocumentSettings(textDocument.uri);
+    const linter = new AlexVSCode(settings as AlexOptions);
 
     // Run alexVSCode linter
     try {
@@ -70,10 +69,12 @@ export async function executeLinter(textDocument: TextDocument, docManager: Docu
             docManager.setDocLinter(textDocument.uri, linter);
         }
     } catch (e) {
-        // If error, send notification to client
-        console.error('VsCode Alex Lint error: ' + e.message + '\n' + e.stack);
+        if (e instanceof Error) {
+            // If error, send notification to client
+            console.error('VsCode Alex Lint error: ' + e.message + '\n' + e.stack);
+        }
         // console.log(`Error linting ${ textDocument.uri }` + e.message + '\n' + e.stack);
-        docManager.connection.sendNotification(StatusNotification.type, {
+        docManager.connection.sendNotification(StatusNotificationType, {
             id: linterTaskId,
             state: 'lint.error',
             documents: [{ documentUri: textDocument.uri }],
@@ -90,17 +91,17 @@ export async function executeLinter(textDocument: TextDocument, docManager: Docu
     // Send diagnostics to client except if format
     await docManager.updateDiagnostics(textDocument.uri, diagnostics);
 
-    let textEdits: TextEdit[] = [];
+    const textEdits: TextEdit[] = [];
 
     // Just Notify client of end of linting 
-    docManager.connection.sendNotification(StatusNotification.type, {
+    docManager.connection.sendNotification(StatusNotificationType, {
         id: linterTaskId,
         state: 'lint.end',
         documents: [{
             documentUri: textDocument.uri
         }],
         lastFileName: fileNm,
-        lastLintTimeMs: performance.now() - perfStart
+        // lastLintTimeMs: performance.now() - perfStart
     });
     return Promise.resolve(textEdits);
 }
@@ -110,7 +111,7 @@ export function parseLinterResultsIntoDiagnostics(lintResults: any, source: stri
     const allText = source;
 
     // Build diagnostics
-    let diagnostics: Diagnostic[] = [];
+    const diagnostics: Diagnostic[] = [];
     const docQuickFixes: any = {};
     // console.log(`Parsing results of ${ textDocument.uri }`);
     // Get each error for the file

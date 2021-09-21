@@ -22,7 +22,7 @@ export function createTextDocumentEdit(textDocument: TextDocument, diagnostic: D
 }
 
 export function createTextEdit(diagnostic: Diagnostic, edits: string): TextEdit {
-    let textEdit: TextEdit = {
+    const textEdit: TextEdit = {
         range: diagnostic.range,
         newText: edits
     };

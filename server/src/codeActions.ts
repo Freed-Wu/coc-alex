@@ -20,9 +20,7 @@ interface StatusParams {
     lastFileName?: string
     lastLintTimeMs?: number
 }
-namespace StatusNotification {
-    export const type = new NotificationType<StatusParams, void>('alexLinter/status');
-}
+export const StatusNotificationType = new NotificationType<StatusParams>('alexLinter/status');
 
 /**
  * Provide quickfixes for a piece of code *
@@ -88,7 +86,7 @@ export async function applyQuickFixes(diagnostic: Diagnostic, textDocumentUri: s
     const textDocument: TextDocument = docManager.getDocumentFromUri(textDocumentUri);
     const docLinter = docManager.getDocLinter(textDocument.uri);
     // console.log(`Start fixing ${ textDocument.uri }`);
-    await docManager.connection.sendNotification(StatusNotification.type, {
+    await docManager.connection.sendNotification(StatusNotificationType, {
         state: 'alex-linter.applyQuickFix',
         documents: [{ documentUri: textDocument.uri }],
         lastFileName: textDocument.uri

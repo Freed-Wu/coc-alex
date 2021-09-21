@@ -12,26 +12,24 @@ import {
     NotificationType,
     DocumentFormattingParams,
     TextDocumentChangeEvent,
-} from 'vscode-languageserver';
+} from 'vscode-languageserver/node';
 import { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 
 import { commands } from './linter';
 import { provideQuickFixCodeActions } from './codeActions';
 
 import { DocumentManager } from './DocumentManager';
-const { performance } = require('perf_hooks');
+// const { performance } = require('perf_hooks');
 
 // Active Document notifications to language server
 interface ActiveDocumentNotificationParams {
     uri: string
 }
-namespace ActiveDocumentNotification {
-    export const type = new NotificationType<ActiveDocumentNotificationParams, void>('alexLinter/activeDocument');
-}
+export const ActiveDocumentNotificationType = new NotificationType<ActiveDocumentNotificationParams>('alexLinter/activeDocument');
 
 // Create a connection for the server. The connection uses Node's IPC as a transport.
 // Also include all preview / proposed LSP features.
-let connection = createConnection(ProposedFeatures.all);
+const connection = createConnection(ProposedFeatures.all);
 
 // Doc manager is a live instance managing the extension all along its execution
 const docManager = new DocumentManager(connection);
@@ -65,14 +63,18 @@ connection.onInitialized(async () => {
     try {
         connection.client.register(DidChangeConfigurationNotification.type);
     } catch (e) {
-        // If error, send notification to client
-        return Promise.reject(new Error('VsCode Alex Linter "DidChangeConfigurationNotification" registration error: ' + e.message + '\n' + e.stack));
+        if (e instanceof Error) {
+            // If error, send notification to client
+            return Promise.reject(new Error('VsCode Alex Linter "DidChangeConfigurationNotification" registration error: ' + e.message + '\n' + e.stack));
+        }
     }
     try {
         connection.client.register(DidSaveTextDocumentNotification.type);
     } catch (e) {
-        // If error, send notification to client
-        return Promise.reject(new Error('VsCode Alex Linter "DidSaveTextDocumentNotification" registration error: ' + e.message + '\n' + e.stack));
+        if (e instanceof Error) {
+            // If error, send notification to client
+            return Promise.reject(new Error('VsCode Alex Linter "DidSaveTextDocumentNotification" registration error: ' + e.message + '\n' + e.stack));
+        }
     }
 });
 
@@ -93,7 +95,7 @@ connection.onDidChangeConfiguration(async (change) => {
                     continue;
                 }
                 await docManager.validateTextDocument(doc);
-            };
+            }
         }
     }, delayBeforeLintAgainAfterConfigUpdate);
 
@@ -138,7 +140,7 @@ connection.onCodeAction(async (codeActionParams: CodeActionParams): Promise<Code
 });
 
 // Notification from client that active window has changed
-connection.onNotification(ActiveDocumentNotification.type, (params) => {
+connection.onNotification(ActiveDocumentNotificationType, (params) => {
     docManager.setCurrentDocumentUri(params.uri);
 });
 

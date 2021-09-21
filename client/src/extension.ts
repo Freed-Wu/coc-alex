@@ -6,7 +6,7 @@ import {
     LanguageClientOptions,
     ServerOptions,
     TransportKind
-} from 'vscode-languageclient';
+} from 'vscode-languageclient/node';
 
 const DIAGNOSTICS_COLLECTION_NAME = 'AlexLinter';
 let diagnosticsCollection: vscode.DiagnosticCollection;
@@ -22,10 +22,10 @@ export function activate(context: ExtensionContext) {
     ///////////////////////////////////////////////
 
     // The server is implemented in node
-    let serverModule = context.asAbsolutePath(path.join('server', 'out', 'server.js'));
+    const serverModule = context.asAbsolutePath(path.join('server', 'out', 'server.js'));
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
-    let serverOptions: ServerOptions = {
+    const serverOptions: ServerOptions = {
         run: { module: serverModule, transport: TransportKind.ipc },
         debug: {
             module: serverModule,
@@ -37,7 +37,7 @@ export function activate(context: ExtensionContext) {
         }
     };
     // Options to control the language client
-    let clientOptions: LanguageClientOptions = {
+    const clientOptions: LanguageClientOptions = {
         // Register the server for plain text, markdown and latex documents
         documentSelector: [
             { scheme: 'file', language: 'plaintext' },
