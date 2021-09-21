@@ -6,7 +6,6 @@
 
 import { TextDocument } from "vscode-languageserver";
 const alex = require('alex');
-const isMdPath = require('is-md');
 
 export interface AlexSettings {
     noBinary: boolean;
@@ -41,14 +40,6 @@ export class AlexVSCode {
         }
 
         return false;
-    }
-
-    isMarkdown(textDocument: TextDocument) {
-        if (textDocument.languageId) {
-            return textDocument.languageId === 'markdown';
-        }
-
-        return isMdPath(String(textDocument.uri));
     }
 
     run(textDocument: TextDocument) {

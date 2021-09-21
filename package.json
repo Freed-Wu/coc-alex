@@ -24,8 +24,6 @@
     },
     "activationEvents": [
         "onLanguage:plaintext",
-        "onLanguage:markdown",
-        "onLanguage:latex",
         "onCommand:alex-linter.lint"
     ],
     "categories": [
