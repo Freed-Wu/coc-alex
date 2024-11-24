@@ -1,13 +1,23 @@
 {
-    "name": "vscode-alex-server",
+    "name": "alex-server",
     "description": "Example implementation of a language server in node.",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "tlahmann",
+    "publisher": "tlahmann",
+    "contributors": [
+        {
+            "name": "shinnn",
+            "url": "https://github.com/shinnn/"
+        }
+    ],
+    "repository": "https://github.com/tlahmann/vscode-alex",
+    "homepage": "https://github.com/tlahmann/vscode-alex#readme",
+    "bugs": "https://github.com/tlahmann/vscode-alex/issues",
     "license": "MIT",
     "engines": {
         "node": "*"
     },
-    "scripts": {},
+    "bin": "bin/alex-server",
     "dependencies": {
         "alex": "^9.1",
         "vscode-languageserver": "^7.0.0",
@@ -15,6 +25,14 @@
     },
     "devDependencies": {
         "@types/alex": "^9.1.1",
-        "@types/vscode": "^1.52"
+        "@types/vscode": "^1.52",
+        "merge-options": "^3.0.4",
+        "ts-loader": "^9.5.1",
+        "typescript": "^4.4.3",
+        "webpack": "^5.96.1",
+        "webpack-cli": "^5.1.4"
+    },
+    "scripts": {
+        "prepack": "webpack-cli --mode production --config webpack.config.js"
     }
 }

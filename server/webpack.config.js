@@ -7,7 +7,7 @@
 
 'use strict';
 
-const withDefaults = require('../webpack.config');
+const withDefaults = require('./common.webpack.config');
 const path = require('path');
 
 module.exports = withDefaults({
