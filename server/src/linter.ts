@@ -31,7 +31,7 @@ export const commands = [
 ];
 
 // Validate a file
-export async function executeLinter(textDocument: TextDocument, docManager: DocumentManager, opts: any = { fix: false, format: false }): Promise<TextEdit[]> {
+export async function executeLinter(textDocument: TextDocument, docManager: DocumentManager, opts: any = { fix: false, format: false, filetype: 'text' }): Promise<TextEdit[]> {
     // const perfStart = performance.now();
 
     // In case lint was queues, get most recent version of textDocument
@@ -60,7 +60,7 @@ export async function executeLinter(textDocument: TextDocument, docManager: Docu
 
     // Get settings and stop if action not enabled
     const settings = await docManager.getDocumentSettings(textDocument.uri);
-    const linter = new AlexVSCode(settings as AlexOptions);
+    const linter = new AlexVSCode(settings as AlexOptions, opts.filetype ?? 'text');
 
     // Run alexVSCode linter
     try {

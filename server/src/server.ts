@@ -38,6 +38,10 @@ let lastChangeConfigEventReceived: number;
 const delayBeforeLintAgainAfterConfigUpdate = 1_500;
 
 connection.onInitialize((params: InitializeParams) => {
+    const { initializationOptions = {} } = params;
+
+    const { filetype = 'text' } = initializationOptions;
+    docManager.filetype = filetype;
     return {
         capabilities: {
             textDocumentSync: {
