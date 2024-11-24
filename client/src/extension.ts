@@ -1,12 +1,13 @@
 import * as path from 'path';
-import { workspace, ExtensionContext } from 'vscode';
-import * as vscode from 'vscode';
+import { workspace, ExtensionContext } from 'coc.nvim';
+import * as vscode from 'coc.nvim';
 import {
     LanguageClient,
     LanguageClientOptions,
     ServerOptions,
-    TransportKind
-} from 'vscode-languageclient/node';
+    TransportKind,
+    services
+} from 'coc.nvim';
 
 const DIAGNOSTICS_COLLECTION_NAME = 'AlexLinter';
 let diagnosticsCollection: vscode.DiagnosticCollection;
@@ -22,7 +23,7 @@ export function activate(context: ExtensionContext) {
     ///////////////////////////////////////////////
 
     // The server is implemented in node
-    const serverModule = context.asAbsolutePath(path.join('server', 'out', 'server.js'));
+    const serverModule = path.join(__dirname, 'server.js');
     // If the extension is launched in debug mode then the debug server options are used
     // Otherwise the run options are used
     const serverOptions: ServerOptions = {
@@ -41,7 +42,11 @@ export function activate(context: ExtensionContext) {
         // Register the server for plain text, markdown and latex documents
         documentSelector: [
             { scheme: 'file', language: 'plaintext' },
+            { scheme: 'file', language: 'gitcommit' },
+            { scheme: 'file', language: 'bbcode' },
             { scheme: 'file', language: 'markdown' },
+            { scheme: 'file', language: 'mdx' },
+            { scheme: 'file', language: 'html' },
             { scheme: 'file', language: 'latex' }
         ],
         diagnosticCollectionName: DIAGNOSTICS_COLLECTION_NAME,
@@ -61,11 +66,12 @@ export function activate(context: ExtensionContext) {
 
     // Start the client. This will also launch the server
     context.subscriptions.push(
-        client.start(),
+        services.registerLanguageClient(client)
+        //client.start(),
     );
 }
 
 // Stop client when extension is deactivated
-export function deactivate(): Thenable<void> {
-    return client.stop();
-}
+//export function deactivate(): Thenable<void> {
+//    return client.stop();
+//}

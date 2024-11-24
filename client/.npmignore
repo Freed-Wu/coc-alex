@@ -1,0 +1,8 @@
+/*
+!/out/
+*.map
+*.LICENSE.txt
+!/prebuilds/
+!/binding.gyp
+!/binding.c
+!/flake.nix
