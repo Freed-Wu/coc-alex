@@ -17,6 +17,7 @@ export class DocumentManager {
     connection: any;
     // Counter for job id
     currentTaskId: number = 0;
+    filetype = 'text';
 
     // Cache the settings of all open documents
     private documentSettings: Map<string, Thenable<VsCodeAlexLinterSettings>> = new Map();
@@ -98,6 +99,8 @@ export class DocumentManager {
         if (currentlyLintDocPos < 0) {
             // Add current lint in currentlyLinted
             this.currentlyLinted.push({ uri: textDocument.uri, options: opts });
+            opts = opts ?? {};
+            opts.filetype = this.filetype;
             const res = await executeLinter(textDocument, this, opts);
             // Remove current lint frrom currently linter
             const justLintedPos = this.currentlyLinted.findIndex((currLinted) => JSON.stringify(currLinted) === JSON.stringify({ uri: textDocument.uri, options: opts }));
