@@ -1,0 +1,7 @@
+{
+    "extends": "../client/tsconfig",
+    "compilerOptions": {
+        "outDir": "out",
+        "rootDir": "."
+    }
+}

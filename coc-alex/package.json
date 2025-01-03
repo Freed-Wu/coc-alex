@@ -1,36 +1,32 @@
 {
-    "name": "alex-linter",
-    "version": "0.6.6",
-    "displayName": "AlexJS Linter",
+    "name": "coc-alex",
+    "version": "0.0.4",
     "description": "Find gender favouring, race related, religion inconsiderate or other unequal phrasing",
-    "publisher": "tlahmann",
-    "contributors": [
-        {
-            "name": "shinnn",
-            "url": "https://github.com/shinnn/"
-        }
-    ],
-    "icon": "media/icon.png",
     "repository": "https://github.com/tlahmann/vscode-alex",
     "homepage": "https://github.com/tlahmann/vscode-alex#readme",
     "bugs": "https://github.com/tlahmann/vscode-alex/issues",
     "license": "MIT",
-    "galleryBanner": {
-        "color": "#FAFAFA",
-        "theme": "light"
-    },
     "engines": {
-        "vscode": "^1.47.0"
+        "coc": "^0.0.80"
     },
+    "keywords": [
+        "coc.nvim"
+    ],
+    "main": "out/extension.js",
     "activationEvents": [
         "onLanguage:plaintext",
+        "onLanguage:gitcommit",
+        "onLanguage:bbcode",
+        "onLanguage:markdown",
+        "onLanguage:mdx",
+        "onLanguage:html",
+        "onLanguage:latex",
         "onCommand:alex-linter.lint"
     ],
-    "categories": [
-        "Linters",
-        "Other"
-    ],
-    "main": "./client/out/extension",
+    "scripts": {
+        "patch": "scripts/patch.sh ../client/src/*.ts",
+        "prepack": "npm run patch && webpack-cli --mode production --config webpack.config.js"
+    },
     "contributes": {
         "configuration": {
             "type": "object",
@@ -80,27 +76,19 @@
             }
         ]
     },
-    "scripts": {
-        "compile": "tsc -b",
-        "webpack": "npm run clean && webpack --mode production --config ./client/webpack.config.js && webpack --mode production --config ./server/webpack.config.js",
-        "webpack:dev": "npm run clean && webpack --mode none --config ./client/webpack.config.js && webpack --mode none --config ./server/webpack.config.js",
-        "watch": "tsc -b -w",
-        "lint": "eslint ./client/src ./server/src --ext .ts,.tsx",
-        "postinstall": "cd server && npm install && cd ../client && npm install && cd ..",
-        "clean": "rimraf client/out && rimraf server/out",
-        "test": "sh ./scripts/e2e.sh"
-    },
     "devDependencies": {
         "@types/mocha": "^9.0.0",
         "@types/node": "^16.9.1",
         "@typescript-eslint/eslint-plugin": "^4.31.2",
         "@typescript-eslint/parser": "^4.31.2",
+        "alex-server": "^0.0.3",
+        "coc.nvim": "^0.0.80",
         "eslint": "^7.32.0",
-        "mocha": "^9.1.1",
         "merge-options": "^3.0.4",
-        "typescript": "^4.4.3"
-    },
-    "dependencies": {
-        "vscode-languageclient": "^7.0"
+        "mocha": "^9.1.1",
+        "ts-loader": "^9.5.1",
+        "typescript": "^4.4.3",
+        "webpack": "^5.96.1",
+        "webpack-cli": "^5.1.4"
     }
 }
